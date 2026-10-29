@@ -1,0 +1,233 @@
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">WORKSPACE OVERVIEW</div>
+    <h1>Welcome back, Nites <span class="wave">✦</span></h1>
+    <p>Here's what's happening with your workspace today.</p>
+  </div>
+  <div class="page-heading-actions">
+    <button class="btn date-range" (click)="rangeOpen.set(!rangeOpen())">
+      <eit-icon name="calendar" />{{ rangeLabel() }}<eit-icon name="chevron-down" /></button
+    ><eit-button label="Export report" icon="download" (click)="exportReport()" />
+  </div>
+</div>
+@if (rangeOpen()) {
+  <div class="card p-3 mb-3">
+    <div class="d-flex gap-3 align-items-end flex-wrap">
+      <label>From<eit-datepicker [(value)]="from" /></label
+      ><label>To<eit-datepicker [(value)]="to" /></label
+      ><button class="btn btn-primary" (click)="applyRange()">Apply period</button>
+    </div>
+    <small class="text-secondary mt-2"
+      >Demo metrics show a proportional comparison for the selected period.</small
+    >
+  </div>
+}
+<div class="welcome-strip">
+  <span class="welcome-spark"><eit-icon name="sparkles" /></span>
+  <div>
+    <strong>A little structure. A lot of possibilities.</strong
+    ><span>Your modular Angular workspace is ready. Let's build something great.</span>
+  </div>
+  <a routerLink="/demo/form">Explore components <eit-icon name="arrow-right" /></a>
+</div>
+<div class="stats-grid">
+  @for (stat of stats; track stat.label; let i = $index) {
+    <section class="card stat-card">
+      <div class="stat-top">
+        <span>{{ stat.label }}</span
+        ><span [class]="'stat-icon stat-' + i"><eit-icon [name]="stat.icon" /></span>
+      </div>
+      <div class="stat-value">
+        {{ stat.prefix }}{{ scaled(stat.value)
+        }}<svg viewBox="0 0 120 36" class="sparkline" aria-hidden="true">
+          <path [attr.d]="stat.line" fill="none" [attr.stroke]="stat.color" stroke-width="2" />
+        </svg>
+      </div>
+      <div class="stat-bottom">
+        <span [class]="stat.down ? 'trend down' : 'trend'"
+          ><eit-icon [name]="stat.down ? 'trending-down' : 'trending-up'" />{{ stat.change }}</span
+        ><span>vs. last month</span>
+      </div>
+    </section>
+  }
+</div>
+<div class="analytics-grid">
+  <section class="card revenue-card">
+    <div class="section-header">
+      <div>
+        <h2>Revenue overview</h2>
+        <p>A snapshot of your business performance</p>
+      </div>
+      <select
+        class="form-select period-select"
+        aria-label="Revenue period"
+        [ngModel]="period()"
+        (ngModelChange)="period.set($event)"
+      >
+        <option>Last 6 months</option>
+        <option>Last 12 months</option>
+      </select>
+    </div>
+    <div class="revenue-summary">
+      <strong>{{ period() === 'Last 6 months' ? '$48,290.00' : '$96,580.00' }}</strong
+      ><span class="trend"><eit-icon name="trending-up" />12.8%</span
+      ><span class="chart-legend"><b></b>Revenue<i></i>Previous period</span>
+    </div>
+    <div class="revenue-chart">
+      <div class="y-axis">
+        <span>$50k</span><span>$40k</span><span>$30k</span><span>$20k</span><span>$10k</span
+        ><span>$0</span>
+      </div>
+      <div class="chart-plot">
+        <svg
+          viewBox="0 0 720 200"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label="Revenue grows from 22 thousand to 48 thousand dollars"
+        >
+          <defs>
+            <linearGradient id="revenueFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#206bc4" stop-opacity=".15" />
+              <stop offset="100%" stop-color="#206bc4" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          @for (y of [0, 40, 80, 120, 160, 199]; track y) {
+            <line
+              x1="0"
+              [attr.y1]="y"
+              x2="720"
+              [attr.y2]="y"
+              stroke="var(--line)"
+              stroke-dasharray="3 4"
+            />
+          }
+          <path
+            d="M0 155 C30 150 35 115 65 120 S110 145 145 115 S185 140 220 100 S270 123 305 95 S350 95 390 60 S440 90 470 65 S520 82 555 40 S590 65 625 34 S680 55 720 10 L720 200 L0 200 Z"
+            fill="url(#revenueFill)"
+          />
+          <path
+            d="M0 174 C40 140 65 166 100 143 S155 165 190 130 S240 150 275 118 S330 143 360 108 S410 130 445 100 S490 124 525 90 S575 103 610 80 S675 95 720 62"
+            fill="none"
+            stroke="#a9bfdd"
+            stroke-width="2"
+            stroke-dasharray="5 5"
+          />
+          <path
+            d="M0 155 C30 150 35 115 65 120 S110 145 145 115 S185 140 220 100 S270 123 305 95 S350 95 390 60 S440 90 470 65 S520 82 555 40 S590 65 625 34 S680 55 720 10"
+            fill="none"
+            stroke="var(--accent)"
+            stroke-width="3"
+          />
+        </svg>
+        <div class="x-axis">
+          @for (
+            month of period() === 'Last 6 months'
+              ? ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct']
+              : ['Nov', 'Jan', 'Mar', 'May', 'Jul', 'Oct'];
+            track month
+          ) {
+            <span>{{ month }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="card traffic-card">
+    <div class="section-header">
+      <div>
+        <h2>Traffic sources</h2>
+        <p>Where your visitors come from</p>
+      </div>
+      <eit-icon name="chart-donut" />
+    </div>
+    <div class="donut-wrap">
+      <div class="donut">
+        <div><strong>24,892</strong><span>Total visitors</span></div>
+      </div>
+    </div>
+    <div class="traffic-legend">
+      @for (source of sources; track source.name) {
+        <div>
+          <span><b [style.background]="source.color"></b>{{ source.name }}</span
+          ><strong
+            >{{ source.value }}<small>{{ source.percent }}</small></strong
+          >
+        </div>
+      }
+    </div>
+  </section>
+</div>
+<div class="bottom-grid">
+  <section class="card projects-card">
+    <div class="section-header">
+      <div>
+        <h2>
+          Recent projects <span class="count-badge">{{ projects.length }}</span>
+        </h2>
+        <p>Keep track of your team's latest work.</p>
+      </div>
+      <a routerLink="/demo/data" class="view-link"
+        >View all projects <eit-icon name="arrow-right"
+      /></a>
+    </div>
+    <eit-datatable [rows]="projects" [columns]="columns" (rowAction)="selected.set($event)" />
+  </section>
+  <section class="card activity-card">
+    <div class="section-header">
+      <div>
+        <h2>Recent activity</h2>
+        <p>The latest across your workspace</p>
+      </div>
+      <span class="live-dot"></span>
+    </div>
+    <div class="activity-list">
+      @for (activity of activities; track activity.name; let last = $last) {
+        <div class="activity-item" [class.last]="last">
+          <span [class]="'activity-avatar ' + activity.color">{{ activity.initials }}</span>
+          <div>
+            <p>
+              <strong>{{ activity.name }}</strong> {{ activity.action }}
+              <b>{{ activity.target }}</b>
+            </p>
+            <small>{{ activity.time }}</small>
+            @if (activity.tag) {
+              <span class="activity-file"><eit-icon name="file-type-pdf" />{{ activity.tag }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    <a routerLink="/usermanagement" class="activity-footer"
+      >View workspace members <eit-icon name="arrow-right"
+    /></a>
+  </section>
+</div>
+@if (selected()) {
+  <div class="modal-backdrop-custom" (click)="selected.set(null)">
+    <section
+      class="dialog-card"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Project details"
+    >
+      <button
+        class="dialog-close btn btn-icon"
+        aria-label="Close dialog"
+        (click)="selected.set(null)"
+      >
+        <eit-icon name="x" />
+      </button>
+      <div class="eyebrow">PROJECT DETAILS</div>
+      <h2>{{ selected()!['name'] }}</h2>
+      <p>{{ selected()!['category'] }}</p>
+      <dl>
+        @for (c of columns; track c.field) {
+          <dt>{{ c.label }}</dt>
+          <dd>{{ selected()![c.field] }}</dd>
+        }
+      </dl>
+      <button class="btn btn-primary" (click)="selected.set(null)">Done</button>
+    </section>
+  </div>
+}
